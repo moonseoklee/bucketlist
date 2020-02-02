@@ -1,0 +1,5 @@
+rootProject.name = 'bucket'
+include 'bucket-login-api'
+include 'bucket-list-api'
+include 'bucket-login-api'
+

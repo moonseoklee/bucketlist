@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{default}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <h2>This is your Admin Dashboard</h2>
+    <label for="inputTitle" class="sr-only">Title</label>
+    <input type="text" name="title" id="inputTitle" class="form-control" placeholder="Title" required="" />
+    <label for="inputDetail" class="sr-only">Detail</label>
+    <input type="text" name="detail" id="inputDetail" class="form-control" placeholder="Detail" required="" />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</div>
+</body>
+</html>
