@@ -21,11 +21,11 @@ public class ListService {
         this.bucketRepository = bucketRepository;
     }
 
-    public  Bucket findBucket(int idx) {
-        List<Bucket> buckets = bucketRepository.findAll();
+    public  Bucket findBucket(List<Bucket> buckets,int idx) {
+
 
         Bucket bucket = buckets.get(idx-1);
-        System.out.println(bucket);
+
         return bucket;
     }
 
@@ -45,15 +45,15 @@ public class ListService {
         return bucket;
     }
 
-    public Bucket checkBucket(int idx) {
-        Bucket bucket = bucketRepository.findByIdx(idx);
+         public Bucket checkBucket(int idx) {
+            Bucket bucket = bucketRepository.findByIdx(idx);
 
 
-        if (bucket.getComplete()==true) {
-            bucket.setComplete(false);
-        } else {
-            bucket.setComplete(true);
-        }
+            if (bucket.getComplete()==true) {
+                bucket.setComplete(false);
+            } else {
+                bucket.setComplete(true);
+            }
 
 
 

@@ -15,13 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
     @Autowired
-    private CustomUserDetailsService userService;
+    private CustomUserDetailsService userDetailsService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login() {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users user = userService.findUserByEmail(auth.getName());
+        Users user = userDetailsService.findUserByEmail(auth.getName());
         modelAndView.addObject("currentUser", user);
         if(user==null) {
             modelAndView.setViewName("login");
@@ -44,7 +44,7 @@ public class LoginController {
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid Users users, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        Users userExists = userService.findUserByEmail(users.getEmail());
+        Users userExists = userDetailsService.findUserByEmail(users.getEmail());
         if (userExists != null) {
             bindingResult
                     .rejectValue("email", "error.user",
@@ -53,7 +53,7 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("signup");
         } else {
-            userService.saveUser(users);
+            userDetailsService.saveUser(users);
             modelAndView.addObject("successMessage", "User has been registered successfully");
             modelAndView.addObject("user", new Users());
             modelAndView.setViewName("login");
@@ -62,17 +62,7 @@ public class LoginController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/dashboardd", method = RequestMethod.GET)
-    public ModelAndView dashboard() {
-        ModelAndView modelAndView = new ModelAndView();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("currentUser", user);
-        modelAndView.addObject("fullName", "Welcome ");
-        modelAndView.addObject("adminMessage", "Content Available Only for Users with Admin Role");
-        modelAndView.setViewName("dashboard");
-        return modelAndView;
-    }
+
 
     @RequestMapping(value = {"/","/home"}, method = RequestMethod.GET)
     public ModelAndView home() {

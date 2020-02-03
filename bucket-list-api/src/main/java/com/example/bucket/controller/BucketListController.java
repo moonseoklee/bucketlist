@@ -26,6 +26,7 @@ public class BucketListController {
     private CustomUserDetailsService userDetailsService;
 
 
+
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public ModelAndView dashboard() {
         ModelAndView modelAndView = new ModelAndView();
@@ -34,37 +35,43 @@ public class BucketListController {
         modelAndView.addObject("currentUser", user);
         modelAndView.addObject("fullName", "Welcome ");
         modelAndView.addObject("adminMessage", "Content Available Only for Users with Admin Role");
+        modelAndView.addObject("bucketList",listService.list(user.getEmail()));
         modelAndView.setViewName("dashboard");
 
-        System.out.println(listService.list(user.getEmail()));
+
 
         return modelAndView;
     }
 
-    @GetMapping("/list/{listId}")
-    public Bucket bucket(@PathVariable("listId") int id){
+    @GetMapping("/dashboard/{listId}")
+    public ModelAndView bucket(@PathVariable("listId") int id){
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userDetailsService.findUserByEmail(auth.getName());
 
-        Bucket bucket = listService.findBucket(id);
+        Bucket bucket = listService.findBucket(listService.list(user.getEmail()),id);
+        modelAndView.addObject("bucket", bucket);
+        modelAndView.setViewName("detail");
 
-        return bucket;
-    }
-
-    @PostMapping(path="/list")
+        return modelAndView;
+}
+    @RequestMapping(value = "/list", method = {RequestMethod.POST,RequestMethod.GET})
     public String create(Bucket resource) throws URISyntaxException {
-        Bucket bucket = Bucket.builder().idx(resource.getIdx()).title(resource.getTitle()).detail(resource.getDetail()).complete(false).build();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Bucket bucket = Bucket.builder().user(auth.getName()).idx(resource.getIdx()).title(resource.getTitle()).detail(resource.getDetail()).complete(false).build();
 
         listService.addBucket(bucket);
 
        // URI location = new URI("/list/"+resource.getIdx());
 
-        return "redirect:/list";
+        return "redirect:/dashboard";
     }
 
-    @GetMapping("list/check/{id}")
+    @GetMapping("dashboard/check/{id}")
     public String check(@PathVariable("id") int id){
         
         listService.checkBucket(id);
 
-        return "/list";
+        return "redirect:/dashboard";
     }
 }
